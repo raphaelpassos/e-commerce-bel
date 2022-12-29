@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
+import { uuid } from 'uuid'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, BaseModel, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
 
 export default class User extends BaseModel {
   public static connection = 'pg'
@@ -40,5 +41,9 @@ export default class User extends BaseModel {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
+  }
+  @beforeCreate()
+  public static assignUuid(user: User) {
+    user.id_nav = uuid()
   }
 }
